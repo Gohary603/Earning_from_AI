@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استكشاف فرص الربح من الذكاء الاصطناعي</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #FFF8F0; /* كريمي فاتح */
+            color: #4A3B32; /* بني داكن للنصوص */
+        }
+        .nav-link {
+            @apply px-3 py-2 text-sm font-medium rounded-md text-[#4A3B32] hover:bg-[#EADDCA] hover:text-[#352A23] transition-colors;
+        }
+        .nav-link.active {
+            @apply bg-[#D4BBA0] text-white;
+        }
+        .section-title {
+            @apply text-3xl font-bold text-center mb-8 text-[#8C5A3A]; /* بني متوسط مائل للبرتقالي */
+        }
+        .card {
+            @apply bg-white p-6 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl;
+        }
+        .card-title {
+            @apply text-xl font-semibold mb-3 text-[#8C5A3A];
+        }
+        .button {
+            @apply bg-[#E8A87C] text-white px-6 py-2 rounded-md hover:bg-[#D18C60] transition-colors font-semibold;
+        }
+        .tab-button {
+            @apply px-4 py-2 rounded-t-lg font-medium transition-colors;
+        }
+        .tab-button.active {
+            @apply bg-[#D4BBA0] text-white;
+        }
+        .tab-button:not(.active) {
+            @apply bg-gray-200 hover:bg-gray-300 text-gray-700;
+        }
+        .accordion-button {
+            @apply w-full text-right bg-gray-100 hover:bg-gray-200 p-4 rounded-lg font-semibold flex justify-between items-center transition-colors;
+        }
+        .accordion-content {
+            @apply bg-white p-4 rounded-b-lg shadow-inner;
+        }
+        .stat-highlight {
+            @apply text-2xl font-bold text-[#E8A87C] my-2;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FFF8F0;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D4BBA0;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8C5A3A;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* أو قيمة مناسبة أخرى */
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* ارتفاع أساسي، يمكن تعديله باستخدام Tailwind responsive prefixes */
+            max-height: 400px; /* أقصى ارتفاع */
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <header class="bg-[#F0E6D6] shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="font-bold text-xl text-[#8C5A3A]">💰 الذكاء الاصطناعي والدخل</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4 space-x-reverse">
+                        <a href="#home" class="nav-link active" data-section="home">الرئيسية</a>
+                        <a href="#methods" class="nav-link" data-section="methods">طرق الربح</a>
+                        <a href="#business-models" class="nav-link" data-section="business-models">نماذج الأعمال</a>
+                        <a href="#pricing" class="nav-link" data-section="pricing">التسعير</a>
+                        <a href="#tools-skills" class="nav-link" data-section="tools-skills">الأدوات والمهارات</a>
+                        <a href="#tips-cases" class="nav-link" data-section="tips-cases">نصائح ودراسات</a>
+                        <a href="#conclusion" class="nav-link" data-section="conclusion">الخلاصة</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-[#4A3B32] hover:text-[#8C5A3A] focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="md:hidden hidden bg-[#F0E6D6] shadow-lg">
+            <a href="#home" class="block nav-link active" data-section="home">الرئيسية</a>
+            <a href="#methods" class="block nav-link" data-section="methods">طرق الربح</a>
+            <a href="#business-models" class="block nav-link" data-section="business-models">نماذج الأعمال</a>
+            <a href="#pricing" class="block nav-link" data-section="pricing">التسعير</a>
+            <a href="#tools-skills" class="block nav-link" data-section="tools-skills">الأدوات والمهارات</a>
+            <a href="#tips-cases" class="block nav-link" data-section="tips-cases">نصائح ودراسات</a>
+            <a href="#conclusion" class="block nav-link" data-section="conclusion">الخلاصة</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 sm:p-6 lg:p-8">
+        <section id="home" class="py-12 min-h-screen">
+            <h1 class="section-title">مقدمة: عصر الذكاء الاصطناعي والفرص الاقتصادية</h1>
+            <div class="text-lg space-y-6 leading-relaxed max-w-3xl mx-auto text-center">
+                <p>يشهد العالم تحولًا اقتصاديًا جذريًا بفضل الذكاء الاصطناعي (AI)، الذي لم يعد مجرد تقنية رائدة، بل أصبح محركًا أساسيًا للابتكار التجاري. لقد أدت قدرة الذكاء الاصطناعي على معالجة البيانات الضخمة، والتعلم المستمر من التفاعلات، وأتمتة المهام المعقدة، إلى ظهور نماذج أعمال جديدة لم تكن متخيلة من قبل.</p>
+                <p class="stat-highlight">من المتوقع أن يساهم الذكاء الاصطناعي بـ 15.7 تريليون دولار في الاقتصاد العالمي بحلول عام 2030!</p>
+                <p>إن هذا التحول يشير إلى أن الذكاء الاصطناعي لا يمثل مجرد تحسين تدريجي للعمليات القائمة، بل هو محفز لإعادة تعريف كيفية عمل الأعمال التجارية بالكامل. هذا التغيير الجذري يتطلب من الشركات والأفراد إعادة التفكير في استراتيجياتهم.</p>
+                <h2 class="text-2xl font-semibold mt-8 mb-4 text-[#8C5A3A]">لماذا يجب التفكير في استغلال الذكاء الاصطناعي لتحقيق الدخل؟</h2>
+                <ul class="list-disc list-inside space-y-2 text-left sm:text-justify">
+                    <li>**النمو الاقتصادي الهائل:** فرص غير مسبوقة لمن هم مستعدون.</li>
+                    <li>**زيادة الكفاءة وتوفير التكاليف:** أتمتة المهام وتحرير الموظفين لمهام ذات قيمة أعلى.</li>
+                    <li>**تعزيز اتخاذ القرار:** رؤى عميقة وقابلة للتنفيذ لاتخاذ قرارات استراتيجية.</li>
+                    <li>**التمايز في السوق:** إنشاء منتجات وحملات تسويقية فريدة.</li>
+                    <li>**تدفقات إيرادات جديدة:** تسييل البيانات وتقديم خدمات ومنتجات جديدة.</li>
+                </ul>
+                 <p class="mt-6">فهم الذكاء الاصطناعي وتطبيقه سيصبحان ضروريين في كل قطاع تقريبًا، مما يدفع التبني السريع والابتكار المستمر.</p>
+            </div>
+        </section>
+
+        <section id="methods" class="py-12 min-h-screen hidden">
+            <h1 class="section-title">طرق مباشرة لتحقيق الدخل من الذكاء الاصطناعي</h1>
+            <p class="text-center max-w-2xl mx-auto mb-10 text-lg">يقدم الذكاء الاصطناعي مجموعة واسعة من الفرص المباشرة لتحقيق الدخل. استكشف الطرق المختلفة والأدوات الشائعة التي يمكن أن تساعدك في البدء.</p>
+            <div id="methods-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            </div>
+            <div class="text-center mt-12">
+                <button id="generate-ideas-button" class="button text-lg px-8 py-3">✨ احصل على أفكار مدعومة بالذكاء الاصطناعي</button>
+            </div>
+        </section>
+
+        <section id="business-models" class="py-12 min-h-screen hidden">
+            <h1 class="section-title">نماذج الأعمال القائمة على الذكاء الاصطناعي</h1>
+            <p class="text-center max-w-2xl mx-auto mb-10 text-lg">تختلف نماذج الأعمال المدفوعة بالذكاء الاصطناعي بشكل جوهري عن الأساليب التقليدية. فهي تستفيد من خوارزميات التعلم المستمر، وقدرتها على اتخاذ القرارات في الوقت الفعلي، وقابلية التوسع الفائقة، والتخصيص المتقدم.</p>
+            <div id="business-models-container" class="space-y-8">
+            </div>
+        </section>
+
+        <section id="pricing" class="py-12 min-h-screen hidden">
+            <h1 class="section-title">استراتيجيات تحقيق الدخل من منتجات وخدمات الذكاء الاصطناعي</h1>
+            <p class="text-center max-w-2xl mx-auto mb-10 text-lg">يتطلب تحقيق الدخل الفعال من الذكاء الاصطناعي فهمًا عميقًا للقيمة التي تقدمها هذه التقنيات للمستخدمين، وتحديد نماذج تسعير مرنة ومبتكرة. أكثر من <span class="stat-highlight !text-xl !my-0">61%</span> من المشترين مستعدون للدفع أكثر لميزات الذكاء الاصطناعي المقنعة.</p>
+            <div id="pricing-strategies-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            </div>
+        </section>
+
+        <section id="tools-skills" class="py-12 min-h-screen hidden">
+            <h1 class="section-title">الأدوات والمهارات</h1>
+            <p class="text-center max-w-2xl mx-auto mb-10 text-lg">للاستفادة القصوى من الذكاء الاصطناعي، من المهم معرفة الأدوات المتاحة والمهارات المطلوبة في السوق. أكثر من <span class="stat-highlight !text-xl !my-0">40%</span> من أصحاب العمل يبلغون عن وظائف شاغرة في مجال الذكاء الاصطناعي بسبب نقص المهارات.</p>
+            <div class="mb-8">
+                <div class="flex justify-center border-b border-gray-300">
+                    <button class="tab-button active" data-tab="ai-tools">أدوات الذكاء الاصطناعي</button>
+                    <button class="tab-button" data-tab="ai-skills">المهارات المطلوبة</button>
+                </div>
+            </div>
+
+            <div id="ai-tools" class="tab-content">
+                <h2 class="text-2xl font-semibold mb-6 text-center text-[#8C5A3A]">أدوات الذكاء الاصطناعي الشائعة</h2>
+                <div class="flex flex-wrap justify-center gap-2 mb-6" id="tools-filters-container">
+                </div>
+                <div id="tools-grid" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                </div>
+            </div>
+
+            <div id="ai-skills" class="tab-content hidden">
+                <h2 class="text-2xl font-semibold mb-6 text-center text-[#8C5A3A]">المهارات المطلوبة في سوق الذكاء الاصطناعي</h2>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4 text-[#4A3B32]">المهارات التقنية الأساسية</h3>
+                        <ul id="technical-skills-list" class="space-y-3"></ul>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4 text-[#4A3B32]">المهارات غير التقنية (الناعمة)</h3>
+                        <ul id="soft-skills-list" class="space-y-3"></ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tips-cases" class="py-12 min-h-screen hidden">
+            <h1 class="section-title">نصائح ودراسات حالة</h1>
+            <p class="text-center max-w-2xl mx-auto mb-10 text-lg">تعلم من الخبراء واكتشف كيف نجح الآخرون في استغلال الذكاء الاصطناعي.</p>
+            <div class="grid lg:grid-cols-2 gap-12">
+                <div>
+                    <h2 class="text-2xl font-semibold mb-6 text-center text-[#8C5A3A]">نصائح لزيادة فرص الربح</h2>
+                    <ul id="tips-list" class="space-y-4">
+                    </ul>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-semibold mb-6 text-center text-[#8C5A3A]">دراسات حالة ناجحة</h2>
+                    <div id="case-studies-accordion" class="space-y-3">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="conclusion" class="py-12 min-h-screen hidden">
+            <h1 class="section-title">الخلاصة والتوصيات المستقبلية</h1>
+            <div class="text-lg space-y-6 leading-relaxed max-w-3xl mx-auto">
+                <p>لقد أحدث الذكاء الاصطناعي ثورة في المشهد الاقتصادي، مقدماً مجموعة واسعة من الفرص لتحقيق الدخل. من إنشاء المحتوى إلى نماذج الأعمال المعقدة، فإن إمكانات الذكاء الاصطناعي هائلة ومتزايدة.</p>
+                
+                <h2 class="text-2xl font-semibold mt-8 mb-4 text-[#8C5A3A]">ملخص لأهم الفرص:</h2>
+                <ul class="list-disc list-inside space-y-2">
+                    <li>**توليد المحتوى:** أداة قوية مع أهمية اللمسة البشرية.</li>
+                    <li>**تعزيز التسويق الرقمي:** زيادة الكفاءة والدقة.</li>
+                    <li>**تطوير الحلول المبتكرة:** سوق متنامٍ لمنتجات وخدمات تعيد تعريف تجربة المستخدم.</li>
+                    <li>**الاستشارات والتدريب:** طلب مرتفع على الخبرة.</li>
+                    <li>**نماذج الأعمال الجديدة:** إمكانية تحقيق تدفقات إيرادات جديدة ومستدامة.</li>
+                </ul>
+
+                <h2 class="text-2xl font-semibold mt-8 mb-4 text-[#8C5A3A]">نصائح للبدء والنمو:</h2>
+                <ul class="list-disc list-inside space-y-2">
+                    <li>الاستثمار في المهارات الأساسية (تقنية وغير تقنية).</li>
+                    <li>تبني نهج "الذكاء الاصطناعي المعزز للبشر".</li>
+                    <li>فهم ديناميكيات السوق والتسعير.</li>
+                    <li>البحث عن فرص العمل الحر والاستشارات.</li>
+                    <li>مواكبة الاتجاهات المستقبلية بحذر.</li>
+                    <li>التركيز على الأخلاقيات والمسؤولية.</li>
+                </ul>
+                <p class="mt-6">إن التحول نحو اقتصاد مدفوع بالذكاء الاصطناعي لا يتطلب فقط تبني التكنولوجيا، بل يتطلب أيضًا تحولًا في العقلية نحو التعلم مدى الحياة، والتركيز على حل المشكلات المعقدة، والقدرة على التكيف مع التغيرات السريعة في السوق. النجاح في هذا المجال سيكون حليف أولئك الذين يتمتعون بالمرونة، والمبادرة في التعلم، والقدرة على دمج الذكاء الاصطناعي بفعالية.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-[#4A3B32] text-center py-6 mt-12">
+        <p class="text-[#FFF8F0]">&copy; 2025 - دليل فرص الربح من الذكاء الاصطناعي. جميع الحقوق محفوظة.</p>
+    </footer>
+
+    <div id="idea-modal" class="modal">
+        <div class="modal-content text-right">
+            <span class="close-button">&times;</span>
+            <h2 class="text-2xl font-bold mb-4 text-[#8C5A3A]">✨ مولد أفكار المحتوى/الخدمات بالذكاء الاصاء الاصطناعي</h2>
+            <p class="mb-4 text-gray-700">أدخل موضوعًا عامًا (مثل: التسويق العقاري، التعليم، الصحة) للحصول على أفكار إبداعية للمحتوى أو الخدمات المدعومة بالذكاء الاصطناعي.</p>
+            <input type="text" id="idea-input" class="w-full p-3 border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-[#E8A87C]" placeholder="أدخل موضوعًا هنا...">
+            <button id="submit-idea-button" class="button w-full">توليد الأفكار</button>
+            <div id="idea-results" class="mt-6 p-4 bg-gray-50 rounded-md border border-gray-200 min-h-[100px] flex items-center justify-center text-gray-600">
+                <p id="idea-placeholder">ستظهر الأفكار المولدة هنا...</p>
+                <div id="idea-spinner" class="hidden animate-spin rounded-full h-8 w-8 border-b-2 border-[#E8A87C]"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const sections = document.querySelectorAll('main section');
+        const navLinks = document.querySelectorAll('nav a.nav-link, #mobile-menu a.nav-link');
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        const generateIdeasButton = document.getElementById('generate-ideas-button');
+        const ideaModal = document.getElementById('idea-modal');
+        const closeModalButton = document.querySelector('#idea-modal .close-button');
+        const ideaInput = document.getElementById('idea-input');
+        const submitIdeaButton = document.getElementById('submit-idea-button');
+        const ideaResults = document.getElementById('idea-results');
+        const ideaPlaceholder = document.getElementById('idea-placeholder');
+        const ideaSpinner = document.getElementById('idea-spinner');
+
+        const reportData = {
+            directMethods: [
+                { 
+                    id: "content-writing",
+                    title: "كتابة المحتوى", 
+                    description: "توليد مقالات، مدونات، نصوص إعلانية، رسائل تسويقية، سير ذاتية.",
+                    tools: ["Jasper AI", "CopyAI", "Rytr", "Writesonic", "HoppyCopy", "Resume.io"],
+                    notes: "يتطلب إشرافًا بشريًا لضمان الأصالة والجودة."
+                },
+                {
+                    id: "art-design",
+                    title: "إنشاء الأعمال الفنية والتصميم",
+                    description: "توليد صور، شعارات، تصميمات جرافيكية، رسوم توضيحية.",
+                    tools: ["Midjourney", "Dall-E 2", "Jasper Art", "Starry AI", "Deep AI", "NightCafe", "Canva", "Remove.bg"],
+                    notes: "القيمة تكمن في المفهوم الفني والتخصيص والتسويق الفعال."
+                },
+                {
+                    id: "video-editing",
+                    title: "تعديل وإنشاء الفيديوهات",
+                    description: "أتمتة تحرير الفيديو، إضافة تأثيرات، إنشاء فيديوهات كاملة، ترجمات.",
+                    tools: ["FlexClip", "Videozen", "InVideo", "Vidyo", "Veed", "CapCut", "DeepAI"],
+                    notes: "يجب أن يضيف قيمة وأصالة مع إبداع بشري واضح لتجنب الرفض من منصات مثل يوتيوب."
+                },
+                {
+                    id: "music-creation",
+                    title: "صنع الموسيقى وبيعها",
+                    description: "توليد مسارات موسيقية فريدة بأنماط وحالات مزاجية مختلفة.",
+                    tools: ["AIVA", "Mubert", "Soundraw", "Boomy", "Soundful", "Loudly", "WavTool", "ElevenLabs"],
+                    notes: "يمكن بيعها في الأسواق المستقلة أو متاجر البيع الإلكتروني."
+                },
+                {
+                    id: "digital-marketing",
+                    title: "التسويق الإلكتروني",
+                    description: "تحليل بيانات المستهلك، تحسين حملات الإعلانات، إدارة وسائل التواصل الاجتماعي.",
+                    tools: ["JasperAI", "CopyAI", "Rytr", "Writesonic", "Adzooma", "WordStream", "Pencil"],
+                    notes: "يعزز اتخاذ القرارات التسويقية الاستراتيجية القائمة على البيانات."
+                },
+                {
+                    id: "seo-services",
+                    title: "تحسين محركات البحث (SEO)",
+                    description: "بحث الكلمات الرئيسية، تحسين المحتوى، تتبع الأداء، بناء الروابط.",
+                    tools: ["SEMrush", "SurferSEO", "AliSEO", "Clearscope", "MarketMuse", "Serpstat", "RankScience"],
+                    notes: "يزيد الإنتاجية ويجذب المزيد من العملاء للمواقع."
+                },
+                {
+                    id: "affiliate-marketing",
+                    title: "التسويق بالعمولة",
+                    description: "إنشاء أفكار للمحتوى، دمج الروابط التابعة، صياغة مراجعات المنتجات.",
+                    tools: ["Scaleo", "Referral AI"],
+                    notes: "يوفر الوقت والجهد في تحليل البيانات وإنشاء المحتوى التسويقي."
+                },
+                {
+                    id: "app-development",
+                    title: "تطوير التطبيقات والحلول",
+                    description: "بناء تطبيقات ويب/جوال، روبوتات دردشة، تعزيز التعلم الآلي في التجارة الإلكترونية.",
+                    tools: ["GitHub Copilot", "Bubble", "Directual", "Chatbase", "Tidio", "Botsonic", "Botsify"],
+                    notes: "يقلل حاجز الدخول للمطورين ويسرع دورة الابتكار."
+                },
+                {
+                    id: "consulting-training",
+                    title: "الاستشارات والتدريب",
+                    description: "تقديم استشارات للشركات حول دمج الذكاء الاصطناعي، تدريب الأفراد والمؤسسات. تتراوح رواتب مستشاري الذكاء الاصطناعي في أمريكا الشمالية من 100,000 إلى 150,000 دولار سنويًا.",
+                    tools: ["Toptal", "Upwork", "AI CERTs™"],
+                    notes: "يتطلب خبرة تقنية قوية ومهارات تواصل ممتازة."
+                }
+            ],
+            businessModels: [
+                { title: "البيانات كخدمة (DaaS)", description: "تحليل البيانات الخام وتقديم رؤى قابلة للتنفيذ. أمثلة: Palantir, Snowflake.", icon: "📊" },
+                { title: "الخدمات القائمة على الاشتراك في الذكاء الاصطناعي", description: "وصول ميسور التكلفة إلى أدوات وقدرات متطورة. أمثلة: Grammarly, Canva.", icon: "🔄" },
+                { title: "الأسواق المدعومة بالذكاء الاصطناعي", description: "مطابقة المشترين والبائعين بكفاءة، وتحسين تجارب المستخدم. أمثلة: Amazon, Airbnb.", icon: "🛒" },
+                { title: "منصات التحليلات التنبؤية", description: "التنبؤ بسلوك العملاء واتجاهات السوق. أمثلة: Salesforce Einstein, IBM Watson Analytics.", icon: "📈" },
+                { title: "المنتجات والخدمات المستقلة", description: "أنظمة مستقلة تمامًا مثل السيارات ذاتية القيادة. أمثلة: Tesla Autopilot, Waymo.", icon: "🤖" },
+                { title: "نماذج التخصيص الفائق", description: "تقديم منتجات وخدمات وتجارب مخصصة للغاية. أمثلة: Spotify, Netflix.", icon: "🎯" },
+                { title: "العمليات كخدمة (Process-as-a-Service)", description: "الاستعانة بمصادر خارجية للعمليات المدعومة بالذكاء الاصطناعي. أمثلة: UiPath, Automation Anywhere.", icon: "⚙️" }
+            ],
+            pricingStrategies: [
+                { title: "القائم على الاستخدام", description: "الشحن بناءً على كمية الاستهلاك (لكل معاملة، استعلام). الأنسب للخدمات ذات التكاليف الحسابية المتغيرة. مثال: واجهات برمجة تطبيقات AI.", notes: "مرونة للعملاء، يتطلب تتبعًا دقيقًا." },
+                { title: "المتدرج", description: "مستويات اشتراك متعددة بميزات مختلفة. الأنسب للمنتجات التي تستهدف شرائح عملاء مختلفة. مثال: أدوات الكتابة بالـ AI (مجاني، احترافي، مؤسسي).", notes: "يوازن الوصول وسهولة الاختيار." },
+                { title: "القائم على القيمة", description: "التسعير بناءً على القيمة الفعلية التي تقدمها للعميل. الأنسب للحلول ذات العائد الاستثماري الواضح. مثال: أنظمة التحليلات التنبؤية.", notes: "يتطلب إظهارًا واضحًا للقيمة." },
+                { title: "الهجين", description: "يجمع بين نموذجين أو أكثر (اشتراك مع استخدام). لتحقيق أقصى مرونة. مثال: اشتراك شهري مع رسوم على الاستخدام الزائد.", notes: "يوفر توازنًا بين التنبؤ والمرونة." },
+                { title: "المجاني المدفوع (Freemium)", description: "ميزات أساسية مجانًا، مع رسوم على الميزات المتميزة. لجذب قاعدة مستخدمين واسعة. مثال: تطبيقات تحرير الصور بالـ AI.", notes: "يتطلب استراتيجية تحويل قوية." }
+            ],
+            aiTools: [
+                { name: "ChatGPT", category: "نصوص", description: "أداة متعددة الاستخدامات للنصوص، الصور، الترجمة، والكود." },
+                { name: "QuillBot", category: "نصوص", description: "مساعد كتابة." },
+                { name: "JasperAI", category: "نصوص", description: "كتابة محتوى وتسويق." },
+                { name: "CopyAI", category: "نصوص", description: "كتابة محتوى وتسويق." },
+                { name: "Rytr", category: "نصوص", description: "كتابة محتوى وتسويق." },
+                { name: "Writesonic", category: "نصوص", description: "كتابة محتوى وتسويق." },
+                { name: "HoppyCopy", category: "نصوص", description: "لرسائل البريد الإلكتروني." },
+                { name: "WordAI", category: "نصوص", description: "إعادة صياغة وتحسين النصوص." },
+                { name: "Midjourney", category: "صور", description: "توليد صور فنية عالية الجودة." },
+                { name: "Dall-E 2", category: "صور", description: "توليد صور من نصوص." },
+                { name: "Canva Magic Studio", category: "صور", description: "أدوات تصميم مدعومة بالـ AI." },
+                { name: "Remove.bg", category: "صور", description: "إزالة خلفيات الصور." },
+                { name: "FlexClip", category: "فيديو", description: "تحرير فيديو سهل الاستخدام." },
+                { name: "InVideo", category: "فيديو", description: "إنشاء فيديوهات من نصوص وقوالب." },
+                { name: "CapCut", category: "فيديو", description: "منصة تحرير فيديو شائعة." },
+                { name: "AIVA", category: "موسيقى", description: "توليد موسيقى أصلية." },
+                { name: "Soundraw", category: "موسيقى", description: "إنشاء موسيقى فريدة." },
+                { name: "ElevenLabs", category: "موسيقى", description: "تحويل النص إلى كلام واستنساخ الصوت." },
+                { name: "SEMrush", category: "تسويق و SEO", description: "أداة شاملة للتسويق الرقمي و SEO." },
+                { name: "SurferSEO", category: "تسويق و SEO", description: "تحسين المحتوى لـ SEO." },
+                { name: "Adzooma", category: "تسويق و SEO", description: "إدارة وتحسين الإعلانات." },
+                { name: "GitHub Copilot", category: "تطوير", description: "مساعد برمجة ذكي." },
+                { name: "Bubble", category: "تطوير", description: "منصة تطوير بدون كود." },
+                { name: "Chatbase", category: "تطوير", description: "بناء روبوتات دردشة مخصصة." },
+                { name: "Tidio (Lyro AI)", category: "تطوير", description: "روبوت دردشة لخدمة العملاء." },
+                { name: "SQLAI", category: "تحليل بيانات", description: "توليد أوامر SQL من نصوص." },
+                { name: "Topaz Photo AI", category: "صور", description: "تحسين جودة الصور." },
+            ],
+            technicalSkills: [
+                { name: "البرمجة (Python, R, C++)", description: "أساس تطوير تطبيقات وخوارزميات AI." },
+                { name: "معالجة اللغة الطبيعية (NLP)", description: "فهم وتفسير اللغة البشرية للآلات." },
+                { name: "تعلم الآلة (ML)", description: "بناء وتطبيق نماذج التعلم من البيانات." },
+                { name: "الخوارزميات", description: "فهم كيفية عمل قواعد الذكاء الاصطناعي." },
+                { name: "تحليل البيانات", description: "جمع، تنظيف، معالجة، وتحويل البيانات إلى رؤى." },
+                { name: "الرياضيات والإحصاء", description: "فهم المبادئ الرياضية التي تدعم نماذج AI." }
+            ],
+            softSkills: [
+                { name: "التواصل", description: "نقل المفاهيم التقنية المعقدة بوضوح." },
+                { name: "حل المشكلات", description: "تحديد المشكلات وتطوير حلول مبتكرة." },
+                { name: "الأخلاقيات", description: "فهم الآثار الأخلاقية وتطوير حلول مسؤولة." },
+                { name: "المرونة والتكيف", description: "مواكبة التطورات السريعة في المجال." },
+                { name: "القيادة", description: "توجيه الفرق والمشاريع." },
+                { name: "إدارة الوقت", description: "إدارة المشاريع والمهام بكفاءة." },
+                { name: "الاستماع الفعال", description: "فهم احتياجات العملاء والزملاء." },
+                { name: "التعاون", description: "العمل بفعالية ضمن فرق متعددة التخصصات." },
+                { name: "الفضول", description: "الرغبة في استكشاف وتجربة تقنيات جديدة." }
+            ],
+            tips: [
+                "التركيز على القيمة المضافة والإبداع البشري.",
+                "فهم سياسات المنصات (مثل يوتيوب) والالتزام بها.",
+                "التعلم المستمر ومواكبة التطورات في مجال الذكاء الاصطناعي.",
+                "بناء شبكة علاقات والبحث عن فرص العمل الحر عبر المنصات المتخصصة.",
+                "التركيز على حل المشكلات الحقيقية للعملاء والأعمال.",
+                "الكشف عن المحتوى المولد بالذكاء الاصطناعي بشفافية.",
+                "الاستثمار في مهارات هندسة المطالبات (Prompt Engineering)."
+            ],
+            caseStudies: [
+                { 
+                    title: "Mudra (التقنية المالية - FinTech)", 
+                    challenge: "تحويل إدارة الميزانية الشخصية لتكون أكثر جاذبية وسهولة.",
+                    solution: "تطبيق يعتمد على روبوت دردشة ذكي (Google Dialogflow) لتحليل بيانات المعاملات وتقديم رؤى مخصصة.",
+                    impact: "تتبع تلقائي للنفقات، تنبيهات بالميزانية، إطلاق ناجح في 12+ دولة."
+                },
+                { 
+                    title: "Vyrb (الوسائط الاجتماعية)", 
+                    challenge: "تمكين التنقل عبر المنصات الاجتماعية بالأوامر الصوتية.",
+                    solution: "تطبيق مساعد صوتي يعتمد على الذكاء الاصطناعي للتنقل بدون استخدام اليدين.",
+                    impact: "تأمين تمويل بأكثر من مليون دولار، 50,000+ تنزيل."
+                },
+                { 
+                    title: "JobGet (التوظيف)", 
+                    challenge: "تسريع عملية توظيف العمالة الزرقاء.",
+                    solution: "ميزات مبتكرة مثل ملفات تعريف مبسطة، مقابلات فيديو مدمجة، ومطابقة مواقع معززة بالـ AI.",
+                    impact: "تمويل بقيمة 52 مليون دولار، 2 مليون تنزيل، 150,000 توظيف ناجح."
+                },
+                { 
+                    title: "Gurushala (تكنولوجيا التعليم - EdTech)", 
+                    challenge: "تبسيط إنشاء المحتوى للمربين، خاصة توليد التقييمات.",
+                    solution: "مولد أسئلة وعلامات مدعوم بالـ AI يستخدم NLP والذكاء الاصطناعي التوليدي.",
+                    impact: "انضمام 150,000 معلم وطالب، جمع 2.1 مليون دولار تمويل."
+                },
+                { 
+                    title: "Netflix (الترفيه)", 
+                    challenge: "الاحتفاظ بالمشتركين عبر توصيات محتوى ذات صلة.",
+                    solution: "محرك توصيات متقدم يحلل عادات المشاهدة والتفضيلات.",
+                    impact: "زيادة مشاركة المشاهدين ومعدلات الاحتفاظ بالاشتراك."
+                },
+                { 
+                    title: "Amazon (إدارة سلسلة التوريد)", 
+                    challenge: "إدارة سلسلة التوريد العالمية الضخمة.",
+                    solution: "خوارزميات AI متطورة لإدارة المخزون التنبؤية.",
+                    impact: "تقليل التكاليف التشغيلية وتحسين رضا العملاء."
+                }
+            ]
+        };
+
+        function setActiveLink(sectionId) {
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.section === sectionId) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        function showSection(sectionId) {
+            sections.forEach(section => {
+                if (section.id === sectionId) {
+                    section.classList.remove('hidden');
+                    section.classList.add('fade-in');
+                } else {
+                    section.classList.add('hidden');
+                    section.classList.remove('fade-in');
+                }
+            });
+            setActiveLink(sectionId);
+            if (mobileMenu.classList.contains('hidden') === false) {
+                mobileMenu.classList.add('hidden');
+            }
+            window.scrollTo(0, 0);
+        }
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const sectionId = link.dataset.section;
+                showSection(sectionId);
+                // Update URL hash without jumping
+                if(history.pushState) {
+                    history.pushState(null, null, `#${sectionId}`);
+                } else {
+                    location.hash = `#${sectionId}`;
+                }
+            });
+        });
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        function populateDirectMethods() {
+            const grid = document.getElementById('methods-grid');
+            grid.innerHTML = '';
+            reportData.directMethods.forEach(method => {
+                const card = document.createElement('div');
+                card.className = 'card cursor-pointer';
+                card.innerHTML = `
+                    <h3 class="card-title">${method.title}</h3>
+                    <p class="text-gray-600 text-sm mb-3">${method.description}</p>
+                    <button class="text-sm text-[#E8A87C] hover:text-[#D18C60] font-semibold toggle-details">عرض التفاصيل ▼</button>
+                    <div class="details mt-4 border-t pt-3 hidden">
+                        <h4 class="font-semibold text-gray-700 mb-1">أدوات شائعة:</h4>
+                        <ul class="list-disc list-inside text-xs text-gray-600 space-y-1 mb-2">
+                            ${method.tools.map(tool => `<li>${tool}</li>`).join('')}
+                        </ul>
+                        <h4 class="font-semibold text-gray-700 mb-1">ملاحظات:</h4>
+                        <p class="text-xs text-gray-600">${method.notes}</p>
+                    </div>
+                `;
+                grid.appendChild(card);
+
+                card.querySelector('.toggle-details').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const detailsDiv = card.querySelector('.details');
+                    detailsDiv.classList.toggle('hidden');
+                    e.target.textContent = detailsDiv.classList.contains('hidden') ? 'عرض التفاصيل ▼' : 'إخفاء التفاصيل ▲';
+                });
+            });
+        }
+
+        function populateBusinessModels() {
+            const container = document.getElementById('business-models-container');
+            container.innerHTML = '';
+            reportData.businessModels.forEach(model => {
+                const item = document.createElement('div');
+                item.className = 'card';
+                item.innerHTML = `
+                    <div class="flex items-center mb-3">
+                        <span class="text-3xl mr-4">${model.icon}</span>
+                        <h3 class="card-title mb-0">${model.title}</h3>
+                    </div>
+                    <p class="text-gray-700 leading-relaxed">${model.description}</p>
+                `;
+                container.appendChild(item);
+            });
+        }
+        
+        function populatePricingStrategies() {
+            const grid = document.getElementById('pricing-strategies-grid');
+            grid.innerHTML = '';
+            reportData.pricingStrategies.forEach(strategy => {
+                const card = document.createElement('div');
+                card.className = 'card flex flex-col justify-between';
+                card.innerHTML = `
+                    <div>
+                        <h3 class="card-title">${strategy.title}</h3>
+                        <p class="text-gray-600 text-sm mb-3">${strategy.description}</p>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-3 border-t pt-2"><em>ملاحظات: ${strategy.notes}</em></p>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        const toolCategories = [...new Set(reportData.aiTools.map(tool => tool.category))];
+        
+        function populateToolsFilters() {
+            const filtersContainer = document.getElementById('tools-filters-container');
+            filtersContainer.innerHTML = `<button class="button filter-btn active" data-category="all">الكل</button>`;
+            toolCategories.forEach(category => {
+                filtersContainer.innerHTML += `<button class="button filter-btn" data-category="${category}">${category}</button>`;
+            });
+
+            document.querySelectorAll('.filter-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    populateTools(this.dataset.category);
+                });
+            });
+        }
+
+        function populateTools(filterCategory = 'all') {
+            const toolsGrid = document.getElementById('tools-grid');
+            toolsGrid.innerHTML = '';
+            const filteredTools = filterCategory === 'all' ? reportData.aiTools : reportData.aiTools.filter(tool => tool.category === filterCategory);
+            
+            if (filteredTools.length === 0) {
+                toolsGrid.innerHTML = `<p class="text-center text-gray-500 col-span-full">لا توجد أدوات في هذه الفئة.</p>`;
+                return;
+            }
+
+            filteredTools.forEach(tool => {
+                const toolCard = document.createElement('div');
+                toolCard.className = 'card text-sm';
+                toolCard.innerHTML = `
+                    <h4 class="font-semibold text-md text-[#8C5A3A] mb-1">${tool.name}</h4>
+                    <p class="text-xs text-gray-500 mb-2">(${tool.category})</p>
+                    <p class="text-gray-600">${tool.description}</p>
+                `;
+                toolsGrid.appendChild(toolCard);
+            });
+        }
+
+        function populateSkills() {
+            const techList = document.getElementById('technical-skills-list');
+            techList.innerHTML = '';
+            reportData.technicalSkills.forEach(skill => {
+                techList.innerHTML += `
+                    <li class="card !p-4">
+                        <h4 class="font-semibold text-[#8C5A3A]">${skill.name}</h4>
+                        <p class="text-xs text-gray-600">${skill.description}</p>
+                    </li>
+                `;
+            });
+
+            const softList = document.getElementById('soft-skills-list');
+            softList.innerHTML = '';
+            reportData.softSkills.forEach(skill => {
+                softList.innerHTML += `
+                     <li class="card !p-4">
+                        <h4 class="font-semibold text-[#8C5A3A]">${skill.name}</h4>
+                        <p class="text-xs text-gray-600">${skill.description}</p>
+                    </li>
+                `;
+            });
+        }
+        
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                const targetTab = button.dataset.tab;
+                tabContents.forEach(content => {
+                    if (content.id === targetTab) {
+                        content.classList.remove('hidden');
+                    } else {
+                        content.classList.add('hidden');
+                    }
+                });
+            });
+        });
+
+        function populateTips() {
+            const tipsList = document.getElementById('tips-list');
+            tipsList.innerHTML = '';
+            reportData.tips.forEach(tip => {
+                tipsList.innerHTML += `
+                    <li class="card !p-4 flex items-start">
+                        <span class="text-[#E8A87C] text-xl mr-3 mt-1">💡</span>
+                        <p class="text-gray-700">${tip}</p>
+                    </li>
+                `;
+            });
+        }
+
+        function populateCaseStudies() {
+            const accordionContainer = document.getElementById('case-studies-accordion');
+            accordionContainer.innerHTML = '';
+            reportData.caseStudies.forEach((study, index) => {
+                const item = document.createElement('div');
+                item.innerHTML = `
+                    <button class="accordion-button" aria-expanded="false" aria-controls="case-study-${index}">
+                        ${study.title}
+                        <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="case-study-${index}" class="accordion-content hidden" role="region">
+                        <h4 class="font-semibold text-gray-700 mt-2 mb-1">التحدي:</h4>
+                        <p class="text-sm text-gray-600 mb-2">${study.challenge}</p>
+                        <h4 class="font-semibold text-gray-700 mb-1">الحل المدعوم بالذكاء الاصطناعي:</h4>
+                        <p class="text-sm text-gray-600 mb-2">${study.solution}</p>
+                        <h4 class="font-semibold text-gray-700 mb-1">التأثير:</h4>
+                        <p class="text-sm text-gray-600">${study.impact}</p>
+                    </div>
+                `;
+                accordionContainer.appendChild(item);
+
+                const button = item.querySelector('.accordion-button');
+                const content = item.querySelector('.accordion-content');
+                const icon = button.querySelector('svg');
+
+                button.addEventListener('click', () => {
+                    const isExpanded = button.getAttribute('aria-expanded') === 'true';
+                    button.setAttribute('aria-expanded', !isExpanded);
+                    content.classList.toggle('hidden');
+                    icon.classList.toggle('rotate-180', !isExpanded);
+                });
+            });
+        }
+
+
+        function handleInitialSection() {
+            const hash = window.location.hash.substring(1);
+            const validSections = Array.from(navLinks).map(link => link.dataset.section);
+            if (hash && validSections.includes(hash)) {
+                showSection(hash);
+            } else {
+                showSection('home');
+                 if(history.pushState) {
+                    history.pushState(null, null, '#home');
+                } else {
+                    location.hash = '#home';
+                }
+            }
+        }
+        
+        window.addEventListener('popstate', () => {
+             handleInitialSection();
+        });
+
+        // Gemini API Integration for Idea Generation
+        generateIdeasButton.addEventListener('click', () => {
+            ideaModal.style.display = 'flex'; // Show modal
+            ideaInput.value = ''; // Clear previous input
+            ideaResults.innerHTML = '<p id="idea-placeholder">ستظهر الأفكار المولدة هنا...</p>'; // Reset results
+            ideaPlaceholder.classList.remove('hidden');
+            ideaSpinner.classList.add('hidden');
+        });
+
+        closeModalButton.addEventListener('click', () => {
+            ideaModal.style.display = 'none'; // Hide modal
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target === ideaModal) {
+                ideaModal.style.display = 'none'; // Hide modal if clicked outside
+            }
+        });
+
+        submitIdeaButton.addEventListener('click', async () => {
+            const topic = ideaInput.value.trim();
+            if (!topic) {
+                ideaResults.innerHTML = '<p class="text-red-500">الرجاء إدخال موضوع.</p>';
+                ideaPlaceholder.classList.add('hidden');
+                return;
+            }
+
+            ideaPlaceholder.classList.add('hidden');
+            ideaSpinner.classList.remove('hidden');
+            ideaResults.innerHTML = ''; // Clear previous results
+
+            const prompt = `اقتراح 5 أفكار إبداعية ومبتكرة للمحتوى أو الخدمات التي يمكن إنشاؤها أو تقديمها باستخدام الذكاء الاصطناعي في مجال "${topic}". يجب أن تكون الأفكار محددة وقابلة للتطبيق.`;
+
+            let chatHistory = [];
+            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+            const payload = { contents: chatHistory };
+            const apiKey = "AIzaSyBa7jOCBc6NCA7CwU4NEMPu6o_qxKBKToQ"; // <--- IMPORTANT: Replace with your actual Gemini API Key
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    ideaResults.innerHTML = `<div class="text-right leading-loose">${text.replace(/\n/g, '<br>')}</div>`; // Use <br> for newlines
+                } else {
+                    ideaResults.innerHTML = '<p class="text-red-500">عذرًا، لم أتمكن من توليد أفكار. يرجى المحاولة مرة أخرى.</p>';
+                }
+            } catch (error) {
+                console.error('Error calling Gemini API:', error);
+                ideaResults.innerHTML = '<p class="text-red-500">حدث خطأ أثناء الاتصال بالذكاء الاصطناعي. يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.</p>';
+            } finally {
+                ideaSpinner.classList.add('hidden');
+            }
+        });
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            populateDirectMethods();
+            populateBusinessModels();
+            populatePricingStrategies();
+            populateToolsFilters();
+            populateTools();
+            populateSkills();
+            populateTips();
+            populateCaseStudies();
+            handleInitialSection();
+        });
+
+    </script>
+    <style>
+        .fade-in {
+            animation: fadeInAnimation 0.5s ease-in-out;
+        }
+        @keyframes fadeInAnimation {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</body>
+</html>
